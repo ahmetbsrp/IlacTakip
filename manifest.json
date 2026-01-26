@@ -1,0 +1,22 @@
+{
+  "name": "Ilac Takip Uygulamasi",
+  "short_name": "Ilac Takip",
+  "start_url": "./",
+  "display": "standalone",
+    "description": "Ilac Takip Uygulamasi",
+
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "./images/main_icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    },
+      {
+    "src": "./images/main_icon.png",
+    "sizes": "1024x1024",
+    "type": "image/png"
+  }
+  ]
+}
