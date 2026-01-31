@@ -5,7 +5,7 @@ const CACHE_ASSETS = [
   "./interface.js",
   "./service-worker.js",
   "./manifest.json",
-  "./images/main_icon.png",
+  "./images/AppIcon.png",
 ];
 
 // Kurulum (Install)

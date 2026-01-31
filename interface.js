@@ -337,8 +337,8 @@ function openModal(medicineId = null) {
             }
         }
     } else {
-        title.textContent = 'Add New Medicine';
-        submitBtn.textContent = 'Add Medicine';
+        title.textContent = 'Add New Tracker';
+        submitBtn.textContent = 'Add Tracker';
         
         const deleteBtn = document.querySelector('.btn-delete');
         if (deleteBtn) {

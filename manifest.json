@@ -1,22 +1,18 @@
 {
-  "name": "Ilac Takip Uygulamasi",
+  "name": "DynaCare",
   "short_name": "DynaCare",
-  "start_url": "./",
+  "start_url": "./index.html",
   "display": "standalone",
-    "description": "DynaCare",
-
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "description": "Tracker application to help you manage your routines effectively.",
+  "background_color": "#1a1a1a",
+  "theme_color": "#1a1a1a",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "./images/AppIcon.png",
-      "sizes": "1408x768",
-      "type": "image/png"
-    },
-      {
-    "src": "./images/AppIcon.png",
-    "sizes": "1408x768",
-    "type": "image/png"
-  }
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }
