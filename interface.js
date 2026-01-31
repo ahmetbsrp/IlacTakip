@@ -16,6 +16,15 @@ document.addEventListener('DOMContentLoaded', function() {
     renderLogPanel();
 });
 
+// Toggle mobile sidebar
+function toggleMobileSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    sidebar.classList.toggle('mobile-open');
+    overlay.classList.toggle('active');
+}
+
 // Setup event listeners
 function setupEventListeners() {
     // View buttons
@@ -164,7 +173,7 @@ function renderLogPanel() {
             
             // Sort by date descending
             const sortedLog = [...med.takenLog].sort((a, b) => 
-                new Date(b.takenAt) - new Date(b.takenAt)
+                new Date(b.takenAt) - new Date(a.takenAt)
             );
             
             sortedLog.slice(0, 10).forEach(entry => {
@@ -514,6 +523,11 @@ function renderMiniCalendar() {
             currentDate = new Date(cellDate);
             renderCalendar();
             updateCurrentDateDisplay();
+            
+            // Close mobile sidebar when date is selected
+            if (window.innerWidth <= 768) {
+                toggleMobileSidebar();
+            }
         };
         
         grid.appendChild(dayCell);
