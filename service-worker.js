@@ -1,74 +1,74 @@
-// serviceWorker.js
-const CACHE_NAME = "V0.1";
-const CACHE_ASSETS = [
+// service-worker.js
+const CACHE_NAME = "DynaCare-v1.2";
+
+const CORE_ASSETS = [
   "./",
+  "./index.html",
   "./interface.js",
-  "./service-worker.js",
   "./manifest.json",
-  "./images/AppIcon.png",
+  "./images/AppIcon.png"
 ];
 
-// Kurulum (Install)
-self.addEventListener("install", (e) => {
-  e.waitUntil(
+// INSTALL
+self.addEventListener("install", (event) => {
+  event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(CACHE_ASSETS);
+      return cache.addAll(CORE_ASSETS);
     })
   );
   self.skipWaiting();
 });
 
-// Aktifleştirme (Activate)
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            return caches.delete(cache);
+// ACTIVATE
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
           }
         })
-      );
-    })
+      )
+    )
   );
-  return self.clients.claim();
+  self.clients.claim();
 });
 
-// Fetch - CORRECTED
-self.addEventListener("fetch", (e) => {
-  // 1. If the request is NOT a GET request (e.g., POST, PUT, DELETE),
-  // simply fetch it from the network and do not cache it.
-  if (e.request.method !== "GET") {
-    e.respondWith(fetch(e.request));
-    return;
-  }
+// FETCH (offline-first, sağlam)
+self.addEventListener("fetch", (event) => {
+  if (event.request.method !== "GET") return;
+  if (!event.request.url.startsWith("http")) return;
 
-  // 2. Also, ignore chrome-extension schemes or other non-http protocols if necessary
-  if (!e.request.url.startsWith('http')) {
-     return;
-  }
+  event.respondWith(
+    caches.match(event.request).then((cached) => {
+      if (cached) {
+        // background update
+        fetch(event.request)
+          .then((res) => {
+            if (res && res.status === 200) {
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, res.clone());
+              });
+            }
+          })
+          .catch(() => {});
+        return cached;
+      }
 
-  e.respondWith(
-    fetch(e.request)
-      .then((response) => {
-        // Check if we received a valid response
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
-        }
-
-        // Clone the response
-        const responseClone = response.clone();
-
-        caches.open(CACHE_NAME).then((cache) => {
-          // Only cache GET requests (already filtered above, but good to be safe)
-          cache.put(e.request, responseClone);
+      return fetch(event.request)
+        .then((res) => {
+          if (!res || res.status !== 200) return res;
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, clone);
+          });
+          return res;
+        })
+        .catch(() => {
+          // offline fallback
+          return caches.match("./index.html");
         });
-
-        return response;
-      })
-      .catch(() => {
-        // Offline: return cached version
-        return caches.match(e.request);
-      })
+    })
   );
 });
